@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo menuInfo =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -184,10 +184,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (estado) {
             case VER_HECHAS:
-                getMenuInflater().inflate(R.menu.menu_contextual_hechas, menu);
+                getMenuInflater().inflate(R.layout.tareas_hechas, menu);
                 break;
             case VER_PENDIENTES:
-                getMenuInflater().inflate(R.menu.menu_contextual_pendientes, menu);
+                getMenuInflater().inflate(R.layout.tareas_pendientes, menu);
                 break;
         }
     }
