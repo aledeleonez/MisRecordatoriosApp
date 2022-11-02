@@ -7,12 +7,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +30,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Tarea> tareas;
+    private TareaAdaptador adaptador;
     public enum Estado {
         VER_HECHAS, VER_PENDIENTES
     }
@@ -101,21 +108,87 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 estado = VER_PENDIENTES;
                 cambiarEstadoBotones();
                 break;
-            case R.id.ivImagen:
-                if (ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, FOTO_TAREA);
-                }
-                break;
             default:
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo menuInfo =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final int posicion = menuInfo.position;
+
+        switch (item.getItemId()) {
+            case R.id.itemEliminar:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("¿Estás seguro?")
+                        .setTitle("Eliminar tarea")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Tarea tareaEliminada = tareas.remove(posicion);
+                                BaseDatos db = new BaseDatos(getApplicationContext());
+                                db.eliminarTarea(tareaEliminada);
+                                adaptador.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.create().show();
+                return true;
+            case R.id.itemHecho:
+                Tarea tarea = tareas.get(posicion);
+                tarea.hacer();
+                BaseDatos db = new BaseDatos(this);
+                db.modificarTarea(tarea);
+                adaptador.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void cambiarEstadoBotones() {
+        Button btHechas = findViewById(R.id.btHechas);
+        Button btPendientes = findViewById(R.id.btPendientes);
+        switch (estado) {
+            case VER_HECHAS:
+                btHechas.setBackgroundColor(Color.BLACK);
+                btHechas.setTextColor(Color.WHITE);
+                btPendientes.setBackgroundColor(Color.GRAY);
+                btPendientes.setTextColor(Color.BLACK);
+                break;
+            case VER_PENDIENTES:
+                btPendientes.setBackgroundColor(Color.BLACK);
+                btPendientes.setTextColor(Color.WHITE);
+                btHechas.setBackgroundColor(Color.GRAY);
+                btHechas.setTextColor(Color.BLACK);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu,
+                                    View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        switch (estado) {
+            case VER_HECHAS:
+                getMenuInflater().inflate(R.menu.menu_contextual_hechas, menu);
+                break;
+            case VER_PENDIENTES:
+                getMenuInflater().inflate(R.menu.menu_contextual_pendientes, menu);
+                break;
+        }
     }
 }

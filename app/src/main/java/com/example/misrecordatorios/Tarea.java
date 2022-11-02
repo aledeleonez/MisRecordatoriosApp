@@ -29,6 +29,8 @@ public class Tarea {
         return nombre;
     }
 
+    public void hacer(){ hecha = true; }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
