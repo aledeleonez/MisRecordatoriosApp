@@ -34,32 +34,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tareaDB = new TareaDB(this);
-        ListaTareas = (ListView) findViewById(R.id.list_todo);
+        ListaTareas = (ListView) findViewById(R.id.lista_toDo);
 
         updateUI();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_task:
-                final EditText taskEdit = new EditText(this);
+            case R.id.accion_anadir_tarea:
+                final EditText editarTarea = new EditText(this);
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Add a new task").setMessage("What do you want to do next?").setView(taskEdit)
+                        .setTitle("Añadir nueva tarea").setMessage("¿Que quiere hacer luego?").setView(editarTarea)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String task = String.valueOf(taskEdit.getText());
-                                SQLiteDatabase db = taskHelper.getWritableDatabase();
+                                String task = String.valueOf(editarTarea.getText());
+                                SQLiteDatabase db = tareaDB.getWritableDatabase();
                                 ContentValues values = new ContentValues();
-                                values.put(TaskContract.TaskEntry.COL_TASK_TITLE, task);
-                                db.insertWithOnConflict(TaskContract.TaskEntry.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                                values.put(Tarea.TareaEntrada.COL_TAREA_TITULO, task);
+                                db.insertWithOnConflict(Tarea.TareaEntrada.TABLA, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                                 db.close();
                                 updateUI();
                             }
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void borrarTarea(View view){
         View parent = (View) view.getParent();
-        TextView tareaTextView = (TextView) parent.findViewById(R.id.titulo_tarea);
+        TextView tareaTextView = (TextView) parent.findViewById(R.id.titulo);
         String tarea = String.valueOf(tareaTextView.getText());
         SQLiteDatabase bd = tareaDB.getWritableDatabase();
         bd.delete(Tarea.TareaEntrada.TABLA, Tarea.TareaEntrada.COL_TAREA_TITULO + " = ?", new String[]{tarea});
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (arrayAdapter == null){
-            arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_nueva_tarea, listaTareas);
+            arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_nueva_tarea, R.id.titulo, listaTareas);
             ListaTareas.setAdapter(arrayAdapter);
         } else {
             arrayAdapter.clear();
