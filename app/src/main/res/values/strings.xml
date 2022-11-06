@@ -1,10 +1,5 @@
 <resources>
     <string name="app_name">Mis Recordatorios</string>
-    <string name="escribe_aqui">Escribe aqui</string>
-    <string name="hechas">Hechas</string>
-    <string name="pendientes">Pendientes</string>
-    <string name="mensaje_texto">Introduce un texto</string>
-    <string name="mTareaAnadidaPendientes">Tarea añadida en tareas pendientes</string>
-    <string name="mEliminar">Eliminar</string>
-    <string name="mHecho">Hecho</string>
+    <string name="anadir_tarea">Añadir tarea</string>
+    <string name="completada">Completada</string>
 </resources>

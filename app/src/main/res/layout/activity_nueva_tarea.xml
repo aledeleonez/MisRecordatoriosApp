@@ -19,7 +19,7 @@
         android:layout_alignParentEnd="true"
         android:onClick="borrarTarea"
         android:layout_alignParentRight="true"
-        android:text="Completada" />
+        android:text="@string/completada" />
 
 </RelativeLayout>
 
