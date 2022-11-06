@@ -3,8 +3,11 @@ package com.example.misrecordatorios;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +31,22 @@ public class MainActivity extends AppCompatActivity {
         tareaDB = new TareaDB(this);
         ListaTareas = (ListView) findViewById(R.id.list_todo);
 
+        updateUI();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void borrarTarea(View view){
+        View parent = (View) view.getParent();
+        TextView tareaTextView = (TextView) parent.findViewById(R.id.titulo_tarea);
+        String tarea = String.valueOf(tareaTextView.getText());
+        SQLiteDatabase bd = tareaDB.getWritableDatabase();
+        bd.delete(Tarea.TareaEntrada.TABLA, Tarea.TareaEntrada.COL_TAREA_TITULO + " = ?", new String[]{tarea});
+        bd.close();
         updateUI();
     }
 
