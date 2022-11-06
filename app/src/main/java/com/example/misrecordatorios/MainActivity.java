@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.accion_anadir_tarea:
                 final EditText editarTarea = new EditText(this);
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Añadir nueva tarea").setMessage("¿Que quiere hacer luego?").setView(editarTarea)
+                        .setTitle("Añadir nueva tarea").setMessage("Escriba la tarea que quiere añadir: ").setView(editarTarea)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
