@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My reminder list </string>
+    <string name="anadir_tarea">Add task</string>
+    <string name="completada">Completed</string>
+</resources>
